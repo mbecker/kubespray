@@ -58,7 +58,7 @@ node03    Ready     ingress,node          28m       v1.10.4
 > kubectl label nodes node01 node02 node03 beta.kubernetes.io/fluentd-ds-ready=true
 ```
 
-Check that pods from DaemonSet are running
+**Check tht pods from DaemonSet are running**
 ```shell
 > kubectl get pods --namespace=kube-system
 NAME                                   READY     STATUS    RESTARTS   AGE
@@ -69,3 +69,97 @@ fluentd-es-v2.0.4-6lkjz                1/1       Running   0          7m
 fluentd-es-v2.0.4-v4f2l                1/1       Running   0          7m
 ...
 ```
+## Create User Credentials / External access with kubectl for specific user
+
+> https://docs.bitnami.com/kubernetes/how-to/configure-rbac-in-your-kubernetes-cluster/#use-case-1-create-user-with-limited-namespace-access
+
+As previously mentioned, Kubernetes does not have API Objects for User Accounts. Of the available ways to manage authentication (see Kubernetes official documentation for a complete list), we will use OpenSSL certificates for their simplicity. The necessary steps are:
+
+### Step 1: Create The Office Namespace
+Execute the kubectl create command to create the namespace (as the admin user):
+```shell
+kubectl create namespace office
+```
+
+### Step 2: Create The User Credentials
+
+1.) Create a private key for your user. In this example, we will name the file employee.key:
+```shell
+openssl genrsa -out employee.key 2048
+```
+
+2.) Create a certificate sign request employee.csr using the private key you just created (employee.key in this example). Make sure you specify your username and group in the -subj section (CN is for the username and O for the group). As previously mentioned, we will use employee as the name and bitnami as the group:
+```shell
+openssl req -new -key employee.key -out employee.csr -subj "/CN=employee/O=bitnami"
+```
+
+3.) Locate your Kubernetes cluster certificate authority (CA). This will be responsible for approving the request and generating the necessary certificate to access the cluster API.
+The file is located on the master node at "/etc/kubernetes/ssl/ca.pem" and "/etc/kubernetes/ca-key.pem".
+Cope th files "ca.pem" and "ca-key.pem" to your local host.
+```shell
+scp -r ssl root@{MASTER01_EXTERNAL_IP}:/etc/kubernetes/ssl/
+```
+
+4.) Generate the final certificate employee.crt by approving the certificate sign request, employee.csr, you made earlier. Make sure you substitute the CA_LOCATION placeholder with the location of your cluster CA. In this example, the certificate will be valid for 500 days:
+```shell
+openssl x509 -req -in employee.csr -CA /home/mbecker/kube-cluster/kubespray/inventory/kube-cluster/artifacts/ssl/ca.pem -CAkey /home/mbecker/kube-cluster/kubespray/inventory/kube-cluster/artifacts/ssl/ca-key.pem -CAcreateserial -out employee.crt -days 500
+```
+
+5.) Save both employee.crt and employee.key in a safe location (in this example we will use /home/employee/.certs/).
+
+6.) Add a new context with the new credentials for your Kubernetes cluster. This example is for a Minikube cluster but it should be similar for others:
+```shell
+./kubectl --kubeconfig=admin.conf config set-credentials employee --client-certificate=/home/mbecker/kube-cluster/kubespray/inventory/kube-cluster/artifacts/employee/employee.crt --client-key=/home/mbecker/kube-cluster/kubespray/inventory/kube-cluster/artifacts/employee/employee.key
+
+./kubectl --kubeconfig=admin.conf config set-context employee-context --cluster=cluster.local --namespace=office --user=employee
+```
+
+7.) Now you should get an access denied error when using the kubectl CLI with this configuration file. This is expected as we have not defined any permitted operations for this user.
+```shell
+./kubectl --kubeconfig=admin.conf --context=employee-context get pods
+```
+
+### Step 3: Create The Role For Managing Deployments
+1.) Create a role-deployment-manager.yaml file with the content below. In this yaml file we are creating the rule that allows a user to execute several operations on Deployments, Pods and ReplicaSets (necessary for creating a Deployment), which belong to the core (expressed by "" in the yaml file), apps, and extensions API Groups:
+```yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  namespace: office
+  name: deployment-manager
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["deployments", "replicasets", "pods"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"] # You can also use ["*"]
+```yaml
+
+2.) Create the Role in the cluster using the kubectl create role command:
+```shell
+# Use kubectl withd RBAC admin rights
+kubectl create -f role-deployment-manager.yaml
+```
+
+### Step 4: Bind The Role To The Employee User
+1.) Create a rolebinding-deployment-manager.yaml file with the content below. In this file, we are binding the deployment-manager Role to the User Account employee inside the office namespace:
+```yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: deployment-manager-binding
+  namespace: office
+subjects:
+- kind: User
+  name: employee
+  apiGroup: ""
+roleRef:
+  kind: Role
+  name: deployment-manager
+  apiGroup: ""
+```
+
+2.) Deploy the RoleBinding by running the kubectl create command:
+```shell
+kubectl create -f rolebinding-deployment-manager.yaml
+```
+
+
