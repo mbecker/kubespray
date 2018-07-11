@@ -284,4 +284,119 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2V
 
 Click “SIGN IN” and you should be able to see your Kubernetes Dashboard fully operational.
 
+## Access to Kibana / Opean API
+
+### Cerae Service withe NodePort (expose pod via port)
+
+> https://kubernetes.io/docs/tasks/access-application-cluster/service-access-application-cluster/#creating-a-service-for-an-application-running-in-two-pods
+
+1.) Get deployment kibana-logging in namespace kube-system
+```shell
+ ./kubectl --kubeconfig=admin.conf get deployments kibana-logging --namespace=kube-system
+```
+
+2.) Create a Service object that exposes the deployment:
+```shell
+./kubectl --kubeconfig=admin.conf expose deployment kibana-logging --type=NodePort --name=kibana-nodeport --namespace=kube-system
+```
+
+3.) Describe service
+```shell
+./kubectl --kubeconfig=admin.conf describe services kibana-nodeport --namespace=kube-system
+Name:                     kibana-nodeport
+Namespace:                kube-system
+Labels:                   k8s-app=kibana-logging
+                          kubernetes.io/cluster-service=true
+Annotations:              <none>
+Selector:                 k8s-app=kibana-logging
+Type:                     NodePort
+IP:                       10.233.41.168
+Port:                     <unset>  5601/TCP
+TargetPort:               5601/TCP
+NodePort:                 <unset>  30852/TCP
+Endpoints:                10.233.64.4:5601
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+```
+
+4. Edit deployment "kibana-loggin"
+```shell
+./kubectl --kubeconfig=admin.conf edit deployment/kibana-logging --namespace=kube-system
+deployment.extensions "kibana-logging" edited
+# The vim editor opens the deployment file. Uncomment the lines for SERVER_BASEPATH.
+# (To insert press "i"; to leave edit mode press "esc"; to save and quit type ":wq!")
+...file content above
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      k8s-app: kibana-logging
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        k8s-app: kibana-logging
+    spec:
+      containers:
+      - env:
+        - name: ELASTICSEARCH_URL
+          value: http://elasticsearch-logging:9200
+        - name: XPACK_MONITORING_ENABLED
+          value: "false"
+        - name: XPACK_SECURITY_ENABLED
+          value: "false"
+        - name: KIBANA_BASE_URL
+          value: ""
+...file content below
+```
+
+### Open API
+> https://github.com/kubernetes-incubator/kubespray/issues/2349
+
+1.) Get cluster information
+```shell
+./kubectl --kubeconfig=admin.conf cluster-info
+Kubernetes master is running at https://212.47.241.204:6443
+Elasticsearch is running at https://212.47.241.204:6443/api/v1/namespaces/kube-system/services/elasticsearch-logging/proxy
+Kibana is running at https://212.47.241.204:6443/api/v1/namespaces/kube-system/services/kibana-logging/proxy
+KubeDNS is running at https://212.47.241.204:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+kubernetes-dashboard is running at https://212.47.241.204:6443/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy
+```
+
+The API URLs are restricted due to RBAC rules. Anonymous can't access the URLs.
+
+2.) Create Cluster Role Binding
+```yaml
+# Assign user "system:anonymous" to cluster role "admin"
+# The binding should open the api (access to kibana)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: open-api
+  namespace: ""
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: system:anonymous
+```
+
+3.) Create cluster role binding
+```shell
+./kubectl --kubeconfig=admin.conf create -f 01-create-open-api.yaml
+```
+
+
+
 
