@@ -156,10 +156,37 @@ roleRef:
   name: deployment-manager
   apiGroup: ""
 ```
+or
+```shell
+>./kubectl --kubeconfig=admin.conf create rolebinding deployment-manager-binding --role=deployment-manager --user=employee
+>./kubectl --kubeconfig=admin.conf get rolebinding deployment-manager-binding
+NAME                         AGE
+deployment-manager-binding   1m
+```
 
 2.) Deploy the RoleBinding by running the kubectl create command:
+(not necessary if rolebinding was created via 'kubectl create rolebinding')
 ```shell
-kubectl create -f rolebinding-deployment-manager.yaml
+> kubectl create -f rolebinding-deployment-manager.yaml
 ```
+
+### Step 5: Test The RBAC Rule
+1.) Now you should be able to execute the following commands without any issues:
+
+```shell
+>./kubectl --kubeconfig=admin.conf --context=employee-context run --image bitnami/dokuwiki mydokuwiki
+deployment.apps "mydokuwiki" created
+>./kubectl --kubeconfig=admin.conf --context=employee-context get pods
+NAME                          READY     STATUS    RESTARTS   AGE
+mydokuwiki-79d855f98f-mmd29   1/1       Running   0          1m
+```
+
+2.) If you run the same command with the --namespace=default argument, it will fail, as the employee user does not have access to this namespace.
+```shell
+>./kubectl --kubeconfig=admin.conf --context=employee-context get pods --namespace=default
+Error from server (Forbidden): pods is forbidden: User "employee" cannot list pods in the namespace "default": role.rbac.authorization.k8s.io "deployment-manager" not found
+```
+Now you have created a user with limited permissions in your cluster.
+
 
 
