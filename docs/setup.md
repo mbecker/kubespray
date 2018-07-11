@@ -131,7 +131,7 @@ rules:
 - apiGroups: ["", "extensions", "apps"]
   resources: ["deployments", "replicasets", "pods"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"] # You can also use ["*"]
-```yaml
+```
 
 2.) Create the Role in the cluster using the kubectl create role command:
 ```shell
