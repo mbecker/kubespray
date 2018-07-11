@@ -1,0 +1,55 @@
+apiVersion: kubeadm.k8s.io/v1alpha1
+kind: MasterConfiguration
+api:
+  advertiseAddress: 10.1.73.11
+  bindPort: 6443
+etcd:
+  endpoints:
+  - https://10.1.73.11:2379
+  - https://10.1.227.85:2379
+  - https://10.1.160.85:2379
+  caFile: /etc/kubernetes/ssl/etcd/ca.pem
+  certFile: /etc/kubernetes/ssl/etcd/node-node01.pem
+  keyFile: /etc/kubernetes/ssl/etcd/node-node01-key.pem
+networking:
+  dnsDomain: cluster.local
+  serviceSubnet: 10.233.0.0/18
+  podSubnet: 10.233.64.0/18
+kubernetesVersion: v1.10.4
+authorizationModes:
+- Node
+- RBAC
+selfHosted: false
+apiServerExtraArgs:
+  bind-address: 0.0.0.0
+  insecure-bind-address: 127.0.0.1
+  insecure-port: "8080"
+  admission-control: Initializers,NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota
+  apiserver-count: "1"
+  endpoint-reconciler-type: lease
+  service-node-port-range: 30000-32767
+  kubelet-preferred-address-types: "InternalDNS,InternalIP,Hostname,ExternalDNS,ExternalIP"
+  basic-auth-file: /etc/kubernetes/users/known_users.csv
+  storage-backend: etcd3
+  runtime-config: admissionregistration.k8s.io/v1alpha1
+  allow-privileged: "true"
+controllerManagerExtraArgs:
+  node-monitor-grace-period: 40s
+  node-monitor-period: 5s
+  pod-eviction-timeout: 5m0s
+  feature-gates: Initializers=False,PersistentLocalVolumes=True,VolumeScheduling=True,MountPropagation=True
+apiServerCertSANs:
+  - kubernetes
+  - kubernetes.default
+  - kubernetes.default.svc
+  - kubernetes.default.svc.cluster.local
+  - 10.233.0.1
+  - localhost
+  - 127.0.0.1
+  - node01
+  - 10.1.73.11
+  - 163.172.149.120
+  - 51.15.210.22
+  - 212.47.241.204
+certificatesDir: /etc/kubernetes/ssl
+unifiedControlPlaneImage: "gcr.io/google-containers/hyperkube:v1.10.4"
