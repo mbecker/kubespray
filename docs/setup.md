@@ -188,5 +188,29 @@ Error from server (Forbidden): pods is forbidden: User "employee" cannot list po
 ```
 Now you have created a user with limited permissions in your cluster.
 
+**Sample kubectl conf for employee**
+```yaml
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMrVENDQWVHZ0F3SUJBZ0lKQUxvcTE4UG1yeW1ITUEwR0NTcUdTSWIzRFFFQkN3VUFNQkl4RURBT0JnTlYKQkFNTUIydDFZbVV0WTJFd0lCY05NVGd3TnpFeE1UQXhNVEl6V2hnUE1qRXhPREEyTVRjeE1ERXhNak5hTUJJeApFREFPQmdOVkJBTU1CMnQxWW1VdFkyRXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUtBb0lCCkFRRE95T2FwR2U4SVU2Y0Y1UGMxUzZFQW9CWGRITE9rdFNhaWpoWCtEK0Y3TFhDMDJrZ3RuOGZYZVhDeTZ4d1IKWWdPVnF2aUxldkQ2dVlpbE5DV2FRM2x1VnJHTkNzbHBtRTNoMmFEN3phTlNXSUVUUGZmY3dzUzdaYm03bVNrSApmQWdTVmVKVjVOdVdTTnNZa3dxMm9tRDdsS2RrQ05tczhXSisyeFQxTEpGRm50ZERNWHpzSW12VXRPd2Jxb3VDCnVFSWVmZXcvdElyMGsySXJoZWFvV3l6bjVCWDlNWXFhOVZVSEpJcUdKenBDSndPZjQzMjVIL1ErbWpBa0g4cWYKZkVqei9TaU01YmJkQzhCQzIvcW1FV1JJSVVBTGNzWE1HT1k5aTdBRlhrYXdwYks4RE1kdmlPZUVmbjFubkNSYwpHZlE1YUNieW5CY3VONG5jbmNYQWNCb2xBZ01CQUFHalVEQk9NQjBHQTFVZERnUVdCQlRMR3hEQXYvdktSYjZJClc0RFVCdWFNc0FwRjl6QWZCZ05WSFNNRUdEQVdnQlRMR3hEQXYvdktSYjZJVzREVUJ1YU1zQXBGOXpBTUJnTlYKSFJNRUJUQURBUUgvTUEwR0NTcUdTSWIzRFFFQkN3VUFBNElCQVFDakZwTVpuZzVkdnE0MWpFeGk4SC9INTNlNQp0L005NzI5bEhqK09jUHQ5Y1AycnVzeXVGY1p2Z0JXL2RrQ2JCLzYvdkVOVGVrWWpwUnhDMTVGOEV6bzk0RTZsCkhYa25KNndZa2QzTS9BK1craTI1UkVwNm5xTEtBSnFINXBTbzJtQmxZbEJHMFRIMlYxTGV2Yk9MVWQxcUc0YmwKRnp5QVM3MlRuS3FxYjBpK012TzlMQ08ya0hmMzBNNzdUbkw2MlpRdlNzYjJ6dG54S3V1N2orOTRwY0g0Qno0UgpTQ2xTU0VUOGcvNEk1czdxMHU2UFBSMXJPYnVtT0RvQjlxSXplK090N2o5QzJwYStVdndiTDY1WUo5YjViM3VPCkFXaTZLMnF6L3J6Q2Jqb3lzRlJsZmpRSzh1ajlnUFllQTZUYm1CQUNLQmFTNE9tdkpYUXIxVjU5ZVBBbwotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+    server: https://212.47.241.204:6443
+  name: cluster.local
+contexts:
+- context:
+    cluster: cluster.local
+    namespace: office
+    user: employee
+  name: employee-context
+current-context: employee-context
+kind: Config
+preferences: {}
+users:
+- name: employee
+  user:
+    client-certificate: employee.crt
+    client-key: employee.key
+```
+
 
 
