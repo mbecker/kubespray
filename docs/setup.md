@@ -213,6 +213,18 @@ users:
 ```
 
 ## Token for ServiceAccounts / Login at dashboard with token
+
+> https://kubernetes.io/docs/reference/access-authn-authz/authentication/
+Service accounts are usually created automatically by the API server and associated with pods running in the cluster through the ServiceAccount Admission Controller. Bearer tokens are mounted into pods at well-known locations, and allow in-cluster processes to talk to the API server. Accounts may be explicitly associated with pods using the serviceAccountName field of a PodSpec
+Service account bearer tokens are perfectly valid to use outside the cluster and can be used to create identities for long standing jobs that wish to talk to the Kubernetes API. To manually create a service account, simply use the kubectl create serviceaccount (NAME) command. This creates a service account in the current namespace and an associated secret.
+
+### Serviceaccount for specific namespace
+> https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/
+Service accounts are for process and not for humans.
+Kubernetes creates automatically for each namespaces a service account.
+
+### Admin Account
+
 1.) Create service account
 ```shell
 cat <<EOF | kubectl create -f -
@@ -268,7 +280,7 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2V
 
 5.) Come back to your browser and choose token on the login page. You will need to paste the token value you have copied on the previous step.
 
-![Kubernetes Dashboard Signin with token](http://www.joseluisgomez.com/wp-content/uploads/2018/02/Screen-Shot-2018-02-18-at-15.09.52-300x208.png)
+![Kubernetes Dashboard Signin with token](http://www.joseluisgomez.com/wp-content/uploads/2018/02/Screen-Shot-2018-02-18-at-15.37.17.png)
 
 Click “SIGN IN” and you should be able to see your Kubernetes Dashboard fully operational.
 
