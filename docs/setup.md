@@ -212,5 +212,64 @@ users:
     client-key: employee.key
 ```
 
+## Token for ServiceAccounts / Login at dashboard with token
+1.) Create service account
+```shell
+cat <<EOF | kubectl create -f -
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kube-system
+EOFCopy
+```
+
+2.) Create ClusterRoleBinding
+```shell
+cat <<EOF | kubectl create -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kube-system
+EOFCopy
+```
+4.a) Get the Bearer Token. Once you run the following command, copy the token value which you will use on the following step.
+```shell
+kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')Copy
+```
+4.b) Get the Bearer token locally
+```shell
+./kubectl --kubeconfig=admin.conf  -n kube-system describe secret $(./kubectl --kubeconfig=admin.conf -n kube-system get secret | grep admin-user | awk '{print $1}') > token_admin-user.txt
+```
+The file "token_admin-user.txt" looks like:
+```shell
+Name:         admin-user-token-hddkr
+Namespace:    kube-system
+Labels:       <none>
+Annotations:  kubernetes.io/service-account.name=admin-user
+              kubernetes.io/service-account.uid=5151d03b-8507-11e8-9300-0007cb03d7b3
+
+Type:  kubernetes.io/service-account-token
+
+Data
+====
+ca.crt:     1090 bytes
+namespace:  11 bytes
+token:      eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyLXRva2VuLWhkZGtyIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiI1MTUxZDAzYi04NTA3LTExZTgtOTMwMC0wMDA3Y2IwM2Q3YjMiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZS1zeXN0ZW06YWRtaW4tdXNlciJ9.Yc6VFKxTKhcwMUkXEFxvFShW7inf0KxDWp-YfXJO6Z5LRBavOJPtEhyFtP2LJOG72PzfcT2XsDpcnOwoWLQzTL3owLCHojfq0g4O7qZUuG8dlF72hu2CbS9TdDPrblA-asd-boDA
+```
+
+5.) Come back to your browser and choose token on the login page. You will need to paste the token value you have copied on the previous step.
+
+![Kubernetes Dashboard Signin with token](http://www.joseluisgomez.com/wp-content/uploads/2018/02/Screen-Shot-2018-02-18-at-15.09.52-300x208.png)
+
+Click “SIGN IN” and you should be able to see your Kubernetes Dashboard fully operational.
 
 
