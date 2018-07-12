@@ -24,8 +24,9 @@ Address 1: 10.0.0.10
 Name:      my-nginx
 Address 1: 10.0.162.149
 ```
-## Debian: Install netstat
+## Debian: Install nslookup
 ```shell
 apt-get update
-apt-get install -y net-tools
+apt-get install dnsutils
+nslookup my-nginx
 ```
