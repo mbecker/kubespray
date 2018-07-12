@@ -18,4 +18,4 @@ Address 1: 10.0.0.10
 
 Name:      my-nginx
 Address 1: 10.0.162.149
-```shell
+```
