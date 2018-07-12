@@ -1,5 +1,10 @@
 # Tipps
 
+## exec to pods
+```shell
+kubectl exec -it fluentd-k2dt2  -- /bin/bash
+```
+
 ## Run busybox as container to test DNS names
 
 Start a busybox container and connect to it's bash. Then check if a DNS name within that POD could be rsolved.
