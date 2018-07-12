@@ -28,5 +28,6 @@ Address 1: 10.0.162.149
 ```shell
 apt-get update
 apt-get install dnsutils
+apt-get install curl
 nslookup my-nginx
 ```
