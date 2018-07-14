@@ -26,6 +26,6 @@ Address 1: 10.0.162.149
 ```
 ## Debian: Install nslookup
 ```shell
-apt-get update && apt-get install dnsutils -y && apt-get install curl
+apt-get update -y && apt-get install dnsutils -y && apt-get install curl -y
 nslookup my-nginx
 ```
