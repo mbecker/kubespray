@@ -1,5 +1,19 @@
 # Tipps
 
+## Kubernetes Configuration
+```shell
+# Edit manifest in /etc/kubernetes/manifests
+-rw-r--r-- 1 root root 3817 Jul 20 06:26 kube-apiserver.manifest
+-rw-r--r-- 1 root root 2414 Jul 14 12:13 kube-controller-manager.manifest
+-rw-r--r-- 1 root root 2030 Jul 14 12:11 kube-proxy.manifest
+-rw-r--r-- 1 root root 1653 Jul 14 12:12 kube-scheduler.manifest
+
+# Normally Kubernetes should restart the docker container; if not then restart kubelet
+sudo systemctl stop kubelet
+sudo rm -rf /var/lib/kubelet/pods/*
+sudo systemctl start kubelet
+```
+
 ## exec to pods
 ```shell
 kubectl exec -it fluentd-k2dt2  -- /bin/bash
