@@ -14,6 +14,11 @@ sudo rm -rf /var/lib/kubelet/pods/*
 sudo systemctl start kubelet
 ```
 
+## Export ressources to yaml manifest
+```shell
+kubectl -n kube-system get deployment kibana-logging --export -o yaml > kibana-deployment.yaml
+```
+
 ## exec to pods
 ```shell
 kubectl exec -it fluentd-k2dt2  -- /bin/bash
