@@ -1,3 +1,17 @@
+## heketi-cli
+
+Get heketi IP
+```shell
+kubectl get svc -l glusterfs=heketi-service
+NAME      TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
+heketi    ClusterIP   10.233.1.76   <none>        8080/TCP   2d
+
+
+Get cluster list
+```shell
+heketi-cli --server http://10.233.1.76:8080 cluster list
+```
+
 > https://access.redhat.com/documentation/en-us/red_hat_gluster_storage/3.3/html/container-native_storage_for_openshift_container_platform/chap-documentation-red_hat_gluster_storage_container_native_with_openshift_platform-heketi_cli
 
 ```shell
