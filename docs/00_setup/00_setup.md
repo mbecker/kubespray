@@ -14,6 +14,12 @@ inventory/kube-cluster2/hosts.ini:1:node01 ansible_host=172.18.33.178
 inventory/kube-cluster2/hosts.ini:2:node02 ansible_host=172.18.33.179
 inventory/kube-cluster2/hosts.ini:3:node03 ansible_host=172.18.33.180
 ```
+
+> 3. Disable swap on all nodes
+```shell
+sudo swapoff -a  
+```
+
 > 2. Rund "ansible-playbook"
 ```shell
 ansible-playbook -u root -i inventory/kube-cluster2/hosts.ini cluster.yml -b -v
