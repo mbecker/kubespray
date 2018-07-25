@@ -1,5 +1,11 @@
 # Open Points
 
+## Kubernetes API Server
+
+## Loadbalancer
+
+> Should the API Server be installed behind a proxy?
+
 ## Elastcisearch / Kibana
 Docker Registry: https://www.docker.elastic.co/#
 
