@@ -1,3 +1,18 @@
+# Requirements
+
+> Ansible (Ubuntu: Install ansible via pip not with apt-get)
+> Python 2 / Python 3
+> Pip
+> Important: ansible-modules-hashivault
+
+# Installation 
+
+> 1. Edit config files (see Configuration)
+> 2. Rund "ansible-playbook"
+```shell
+ansible-playbook -u root -i inventory/kube-cluster2/hosts.ini cluster.yml -b -v
+```
+
 # Configuration
 
 ### Dashboard - RBAC - Add user
