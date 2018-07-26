@@ -21,7 +21,7 @@ PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/u
 
 # Installation 
 
-> 1. Edit config files (see Configuration)
+1. Edit config files (see Configuration)
 ```shell
 inventory/kube-cluster2/group_vars/k8s-cluster.yml:253:supplementary_addresses_in_ssl_keys: [172.18.33.178, 172.18.33.179, 172.18.33.180]
 inventory/kube-cluster2/hosts.ini:1:node01 ansible_host=172.18.33.178
@@ -29,14 +29,25 @@ inventory/kube-cluster2/hosts.ini:2:node02 ansible_host=172.18.33.179
 inventory/kube-cluster2/hosts.ini:3:node03 ansible_host=172.18.33.180
 ```
 
-> 3. Disable swap on all nodes
+2. Disable swap on all nodes
 ```shell
 sudo swapoff -a  
 ```
 
-> 2. Rund "ansible-playbook"
+3. Run "ansible-playbook"
 ```shell
 ansible-playbook -u root -i inventory/kube-cluster2/hosts.ini cluster.yml -b -v
+```
+
+4. Install GusterFS
+> Mount disks in nodes to "/dev/vdb"
+```
+ansible kube-node -a "wipefs -a /dev/vdb" -u root -i inventory/kube-cluster2/hosts.ini cluster.yml
+ansible kube-node -a "modprobe dm_thin_pool" -u root -i inventory/kube-cluster2/hosts.ini
+
+ansible kube-node -a "add-apt-repository ppa:gluster/glusterfs-3.12" -u root -i inventory/kube-cluster2/hosts.ini
+ansible kube-node -a "apt-get update" -u root -i inventory/kube-cluster2/hosts.ini
+ansible kube-node -a "apt-get install -y glusterfs-client" -u root -i inventory/kube-cluster2/hosts.ini
 ```
 
 # Configuration
