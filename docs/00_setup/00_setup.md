@@ -1,9 +1,23 @@
 # Requirements
 
+*Tools / Software*
 > Ansible (Ubuntu: Install ansible via pip not with apt-get)
 > Python 2 / Python 3
 > Pip
 > Important: ansible-modules-hashivault
+
+*Proxy*
+Enable http_proxy, https_proxy and no_proxy in /etc/environemnt with the correct IPs / DNS names.
+Ensure that local network is not tunneled via proxy.
+```shell
+# /etc/environment
+http_proxy=proxy.rz.aareon.com:80
+https_proxy=proxy.rz.aareon.com:80
+no_proxy="127.0.0.1,localhost,localhost,127.0.0.0,127.0.1.1,127.0.1.1,local.home,172.18.33.178,172.18.33.179,172.18.33.180,https://127.0.0.1:6443/healthz,https://127.0.0.1,https://172.18.33.178,https://172.18.33.1$
+NO_PROXY="127.0.0.1,localhost,localhost,127.0.0.0,127.0.1.1,127.0.1.1,local.home,172.18.33.178,172.18.33.179,172.18.33.180,https://127.0.0.1:6443/healthz,https://127.0.0.1,https://172.18.33.178,https://172.18.33.1$
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
+```
+
 
 # Installation 
 
