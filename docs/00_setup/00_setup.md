@@ -1,14 +1,14 @@
 # Requirements
 
-*Tools / Software*
+**Tools / Software**
 > Ansible (Ubuntu: Install ansible via pip not with apt-get)
 > Python 2 / Python 3
 > Pip
 > Important: ansible-modules-hashivault
 
-*Proxy*
-Enable http_proxy, https_proxy and no_proxy in /etc/environemnt with the correct IPs / DNS names.
-Ensure that local network is not tunneled via proxy.
+**Proxy**
+> Enable http_proxy, https_proxy and no_proxy in /etc/environemnt with the correct IPs / DNS names.
+> Ensure that local network is not tunneled via proxy.
 ```shell
 # /etc/environment
 http_proxy=proxy.rz.aareon.com:80
