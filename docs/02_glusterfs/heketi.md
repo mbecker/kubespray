@@ -242,6 +242,12 @@ heketi-cli volume list
 Lists the volumes managed by Heketi
 
 
+```shell
+heketi-cli volume delete 3229dff053fa34180dd2bc1d119c8e53
+```
+Delete volume with volume id
+
+
 # Volume Path / kubectl PV
 ```shell
 $ kubectl get pv --all-namespaces -o yaml|grep path
