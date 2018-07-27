@@ -1,5 +1,16 @@
 ## heketi-cli
 
+Set heketi-cli
+```shell
+$ export HEKETI_CLI_SERVER=$(kubectl get svc/heketi --template 'http://{{.spec.clusterIP}}:{{(index .spec.ports 0).port}}')
+
+$ echo $HEKETI_CLI_SERVER
+http://10.42.0.0:8080
+
+$ curl $HEKETI_CLI_SERVER/hello
+Hello from Heketi
+```
+
 Get heketi IP
 ```shell
 kubectl get svc -l glusterfs=heketi-service
