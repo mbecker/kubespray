@@ -240,3 +240,16 @@ Retrieves the information about the node.
 heketi-cli volume list
 ```
 Lists the volumes managed by Heketi
+
+
+# Volume Path / kubectl PV
+```shell
+$ kubectl get pv --all-namespaces -o yaml|grep path
+mbecker@node01:~$ kubectl get pv --all-namespaces -o yaml|grep path
+      path: vol_fc667f0ee612c5586694922f37a16ff4
+      path: vol_3229dff053fa34180dd2bc1d119c8e53
+          fd = os.open(path, os.O_CREAT | os.O_RDWR)
+      path: vol_1b3c335dc952cd6a851b6a95a30e365e
+      path: vol_a56e2f1c31cf8a35880754d21362a1cf
+      path: vol_fe65329d81e172289eea4aae386c5e4d
+````
