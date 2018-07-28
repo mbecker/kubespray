@@ -12,18 +12,27 @@ Created topic "test-no-rep".
 ```
 Run the producer to publish events to Kafka topic
 > topic: test-no-rep
+>
 > num-records: 50000000 (50.000.000)
+>
 > record-size: 500
+>
 > throughput: 1
+>
 > producer-props: acks=1
+>
 > buffer.memory=104857600
+>
 > batch.size=9000
+>
 > bootstrap.servers=212.47.241.204:32400
 ```shell
 bin/kafka-run-class.sh org.apache.kafka.tools.ProducerPerformance --topic test-no-rep --num-records 50000000 --record-size 500 --throughput -1 --producer-props acks=1 bootstrap.servers=bootstrap.kafka.svc.cluster.local:9092 buffer.memory=104857600 batch.size=9000
 
 # Results
 50000000 records sent, 23045.255351 records/sec (10.99 MB/sec), 8533.88 ms avg latency, 25037.00 ms max latency, 7982 ms 50th, 20351 ms 95th, 21875 ms 99th, 24272 ms 99.9th.
+# Public Cloud
+2000000 records sent, 51979.104400 records/sec (24.79 MB/sec), 3216.78 ms avg latency, 8489.00 ms max latency, 2809 ms 50th, 8092 ms 95th, 8315 ms 99th, 8462 ms 99.9th.
 ```
 
 ## Single producer publishing 500 byte messages with (3x) and with out replication
