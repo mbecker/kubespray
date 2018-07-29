@@ -66,7 +66,7 @@ Topic:test-no-rep       PartitionCount:48       ReplicationFactor:1     Configs:
         Topic: test-no-rep      Partition: 47   Leader: 0       Replicas: 0     Isr: 0
 ```
 
-## Remove topc
+## Remove topic
 ```shell
 $ ./bin/kafka-topics.sh --zookeeper zookeeper.kafka:2181 --delete --topic test-no-rep
 Topic test-no-rep is marked for deletion.
