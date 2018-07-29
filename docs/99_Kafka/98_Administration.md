@@ -1,7 +1,35 @@
 # Kafka Administration
 > https://github.com/jaceklaskowski/kafka-notebook/blob/master/kafka-topic-deletion.adoc
 
-# # List Topics
+## Change port
+Take a back up of kafka-run-class.sh (such as cp kafka-run-class.sh kafka-run-class.sh.old).
+```shell
+vi kafka-run-class.sh
+```
+Change the following section:
+```shell
+# JMX port to use 
+if [ $JMX_PORT ]; then 
+KAFKA_JMX_OPTS="$KAFKA_JMX_OPTS -Dcom.sun.management.jmxremote.port=$JMX_PORT" 
+fi
+```
+
+To the following:
+```shell
+# JMX port to use 
+if [ $ISKAFKASERVER = "true" ]; then 
+JMX_REMOTE_PORT=$JMX_PORT 
+
+else 
+JMX_REMOTE_PORT=$CLIENT_JMX_PORT 
+fi 
+
+if [ $JMX_REMOTE_PORT ]; then 
+KAFKA_JMX_OPTS="$KAFKA_JMX_OPTS -Dcom.sun.management.jmxremote.port=$JMX_REMOTE_PORT" 
+fi
+```
+
+## List Topics
 ```shell
 $ ./bin/kafka-topics.sh --zookeeper zookeeper.kafka:2181 --list
 MY_TOPIC
