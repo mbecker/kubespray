@@ -11,6 +11,8 @@ bin/kafka-topics.sh --zookeeper zookeeper.kafka:2181 --create --topic test-no-re
 Created topic "test-no-rep".
 ```
 Run the producer to publish events to Kafka topic
+
+**Configuration:**
 > topic: test-no-rep
 >
 > num-records: 50000000 (50.000.000)
@@ -25,12 +27,15 @@ Run the producer to publish events to Kafka topic
 >
 > batch.size=9000
 >
-> bootstrap.servers=212.47.241.204:32400
+> bootstrap.servers=bootstrap.kafka.svc.cluster.local:9092
+
+**Command**
 ```shell
 bin/kafka-run-class.sh org.apache.kafka.tools.ProducerPerformance --topic test-no-rep --num-records 50000000 --record-size 500 --throughput -1 --producer-props acks=1 bootstrap.servers=bootstrap.kafka.svc.cluster.local:9092 buffer.memory=104857600 batch.size=9000
 
 # Results
 50000000 records sent, 23045.255351 records/sec (10.99 MB/sec), 8533.88 ms avg latency, 25037.00 ms max latency, 7982 ms 50th, 20351 ms 95th, 21875 ms 99th, 24272 ms 99.9th.
+
 # Public Cloud
 2000000 records sent, 51979.104400 records/sec (24.79 MB/sec), 3216.78 ms avg latency, 8489.00 ms max latency, 2809 ms 50th, 8092 ms 95th, 8315 ms 99th, 8462 ms 99.9th.
 ```
@@ -38,13 +43,16 @@ bin/kafka-run-class.sh org.apache.kafka.tools.ProducerPerformance --topic test-n
 ## Single producer publishing 500 byte messages with (3x) and with out replication
 > The objective of this test is to understand the cost of the replication
 
-create kafka topic (with replication)
+**create kafka topic (with replication)**
 ```shell
 bin/kafka-topics.sh --zookeeper zookeeper.kafka:2181 --create --topic test-3-rep --partitions 48 --replication-factor 3
 ```
-publish messages to kafka topic with required settings
+**publish messages to kafka topic with required settings**
 ```shell
-bin/kafka-run-class.sh org.apache.kafka.tools.ProducerPerformance --topic testr3 --num-records 30000000 --record-size 500 --throughput -1 --producer-props acks=1 bootstrap.servers=habench101:9092 buffer.memory=104857600 batch.size=6000
+$ ./bin/kafka-run-class.sh org.apache.kafka.tools.ProducerPerformance --topic testr3 --num-records 30000000 --record-size 500 --throughput -1 --producer-props acks=1 bootstrap.servers=habench101:9092 buffer.memory=104857600 batch.size=6000
+
+# Public Cloud: 2000000 messages, 500 bytes
+2000000 records sent, 6874.624044 records/sec (3.28 MB/sec), 26618.83 ms avg latency, 30808.00 ms max latency, 28086 ms 50th, 29587 ms 95th, 30264 ms 99th, 30568 ms 99.9th.
 ```
 
 # Three producers, 3x async replication with different message sizes
