@@ -29,6 +29,11 @@ KAFKA_JMX_OPTS="$KAFKA_JMX_OPTS -Dcom.sun.management.jmxremote.port=$JMX_REMOTE_
 fi
 ```
 
+## Create Topic
+```shell
+bin/kafka-topics.sh --create --zookeeper <your_zookeeper_host>:2181 --replication-factor <number_of_replicas> --partitions <number_of_partitions> --topic <name_of_your_topic>
+```
+
 ## List Topics
 ```shell
 $ ./bin/kafka-topics.sh --zookeeper zookeeper.kafka:2181 --list
