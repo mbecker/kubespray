@@ -44,7 +44,7 @@ kube_users:
     groups:
       - system:masters
   mbecker:
-    pass: "mat1Bec#"
+    pass: "test123"
     role: admin
     groups:
       - system:masters
